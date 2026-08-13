@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>일본어 심화 단어장</title>
+<style>
+  body { 
+    background-color: #1A202C; /* 눈이 편안한 다크 모드 */
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; 
+    margin: 0; padding: 0; color: #E2E8F0; -webkit-tap-highlight-color: transparent; 
+  }
+  
+  #study-view {
+    display: flex; flex-direction: column; align-items: center;
+    padding: calc(30px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom));
+    min-height: 100dvh; box-sizing: border-box;
+  }
+
+  .header {
+    width: 100%; max-width: 400px; display: flex; justify-content: space-between;
+    font-size: 16px; font-weight: 700; color: #A0AEC0; margin-bottom: 40px;
+  }
+
+  .word-display {
+    font-size: 56px; font-weight: 800; color: #4FD1C5; /* 청록색 포인트 */
+    margin-bottom: 10px; text-align: center;
+  }
+  .word-meaning {
+    font-size: 22px; font-weight: 700; color: #E2E8F0;
+    margin-bottom: 40px; text-align: center; opacity: 0; transition: opacity 0.2s;
+  }
+
+  .sentence-box {
+    width: 100%; max-width: 400px; text-align: center; margin-bottom: 40px;
+  }
+  .sentence-ja {
+    font-size: 20px; line-height: 2; font-weight: 600; color: #E2E8F0;
+    word-break: keep-all; margin-bottom: 16px;
+  }
+  .sentence-ko {
+    font-size: 16px; color: #A0AEC0; opacity: 0; transition: opacity 0.2s;
+  }
+
+  /* 루비(요미가나) 숨김/보임 처리 */
+  rt { opacity: 0; transition: opacity 0.2s; color: #4FD1C5; font-size: 11px; font-weight: 800; }
+  .show-ruby rt { opacity: 1; }
+  .show-meaning .word-meaning, .show-meaning .sentence-ko { opacity: 1; }
+
+  /* 토글 버튼 구역 */
+  .toggle-area {
+    display: flex; gap: 16px; width: 100%; max-width: 400px; margin-bottom: auto;
+  }
+  .toggle-btn {
+    flex: 1; padding: 16px 0; background: #2D3748; border-radius: 16px;
+    color: #A0AEC0; font-size: 16px; font-weight: 700; border: 2px solid transparent;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .toggle-btn.active {
+    background: rgba(79, 209, 197, 0.1); border: 2px solid #4FD1C5; color: #4FD1C5;
+  }
+
+  /* 하단 O/X 버튼 */
+  .action-area {
+    display: flex; gap: 16px; width: 100%; max-width: 400px; margin-top: 40px;
+  }
+  .action-btn {
+    flex: 1; padding: 24px 0; border-radius: 20px; font-size: 18px; font-weight: 800;
+    cursor: pointer; border: none; color: #ffffff; transition: transform 0.1s;
+  }
+  .btn-no { background: #E53E3E; box-shadow: 0 4px 0 #C53030; }
+  .btn-yes { background: #319795; box-shadow: 0 4px 0 #285E61; }
+  .action-btn:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+</style>
+</head>
+<body>
+
+<div id="study-view">
+  <div class="header">
+    <div id="progress-text">1 / 10</div>
+    <div id="word-tag">#日常</div>
+  </div>
+
+  <div class="word-display"><ruby id="main-ruby">観衆<rt>かんしゅう</rt></ruby></div>
+  <div class="word-meaning" id="main-meaning">관중</div>
+
+  <div class="sentence-box">
+    <div class="sentence-ja" id="sentence-ja">
+      <ruby>観衆<rt>かんしゅう</rt></ruby>が<ruby>危険<rt>きけん</rt></ruby>に<ruby>晒<rt>さら</rt></ruby>される<ruby>恐<rt>おそ</rt></ruby>れがある。
+    </div>
+    <div class="sentence-ko" id="sentence-ko">관중이 위험에 처할 우려가 있다.</div>
+  </div>
+
+  <div class="toggle-area">
+    <button class="toggle-btn" id="btn-ruby" onclick="toggleRuby()">あ 요미가나</button>
+    <button class="toggle-btn" id="btn-meaning" onclick="toggleMeaning()">A 뜻·해석</button>
+  </div>
+
+  <div class="action-area">
+    <button class="action-btn btn-no" onclick="nextWord()">🤔 모름</button>
+    <button class="action-btn btn-yes" onclick="nextWord()">✅ 앎</button>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+  let currentIndex = 0;
+  let isRubyOn = false;
+  let isMeaningOn = false;
+
+  function loadWord() {
+    if(currentIndex >= db.length) {
+        alert("모든 단어를 학습했습니다!");
+        currentIndex = 0;
+    }
+    const w = db[currentIndex];
+    document.getElementById('progress-text').innerText = `${currentIndex + 1} / ${db.length}`;
+    document.getElementById('word-tag').innerText = `#${w.tag}`;
+    
+    // 데이터 렌더링
+    document.getElementById('main-ruby').innerHTML = `${w.word}<rt>${w.reading}</rt>`;
+    document.getElementById('main-meaning').innerText = w.meaning;
+    document.getElementById('sentence-ja').innerHTML = w.exJa;
+    document.getElementById('sentence-ko').innerText = w.exKo;
+
+    // 토글 초기화
+    isRubyOn = false; isMeaningOn = false;
+    updateToggles();
+  }
+
+  function toggleRuby() {
+    isRubyOn = !isRubyOn;
+    updateToggles();
+  }
+
+  function toggleMeaning() {
+    isMeaningOn = !isMeaningOn;
+    updateToggles();
+  }
+
+  function updateToggles() {
+    const view = document.getElementById('study-view');
+    const btnRuby = document.getElementById('btn-ruby');
+    const btnMean = document.getElementById('btn-meaning');
+
+    if(isRubyOn) { view.classList.add('show-ruby'); btnRuby.classList.add('active'); }
+    else { view.classList.remove('show-ruby'); btnRuby.classList.remove('active'); }
+
+    if(isMeaningOn) { view.classList.add('show-meaning'); btnMean.classList.add('active'); }
+    else { view.classList.remove('show-meaning'); btnMean.classList.remove('active'); }
+  }
+
+  function nextWord() {
+    currentIndex++;
+    loadWord();
+  }
+
+  // 초기 실행
+  setTimeout(loadWord, 100);
+</script>
+</body>
+</html>
