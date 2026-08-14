@@ -1616,7 +1616,7 @@ const db = [
     reading: "ようい",
     meaning: "용이, 쉬움",
     tag: "日常",
-    exJa: この<ruby>問題<rt>もんだい</rt></ruby>を<ruby>解決<rt>かいけつ</rt></ruby>するのは、<ruby>決<rt>けっ</rt></ruby>して<ruby>容易<rt>ようい</rt></ruby>ではない。",
+    exJa: "この<ruby>問題<rt>もんだい</rt></ruby>を<ruby>解決<rt>かいけつ</rt></ruby>するのは、<ruby>決<rt>けっ</rt></ruby>して<ruby>容易<rt>ようい</rt></ruby>ではない。",
     exKo: "이 문제를 해결하는 것은 결코 쉽지 않다."
   },
   {
