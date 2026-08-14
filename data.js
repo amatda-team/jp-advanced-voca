@@ -1661,7 +1661,7 @@ const db = [
     reading: "みみなれる",
     meaning: "귀에 익다",
     tag: "日常",
-    exJa: ラジオから、<ruby>耳慣<rt>みみな</rt></ruby>れた<ruby>音楽<rt>おんがく</rt></ruby>が<ruby>流<rt>なが</rt></ruby>れてきた。",
+    exJa: "ラジオから、<ruby>耳慣<rt>みみな</rt></ruby>れた<ruby>音楽<rt>おんがく</rt></ruby>が<ruby>流<rt>なが</rt></ruby>れてきた。",
     exKo: "라디오에서 귀에 익은 음악이 흘러나왔다."
   },
   {
