@@ -100,7 +100,6 @@
     word-break: keep-all; overflow-wrap: anywhere;
   }
   
-  /* 단어장 메인 요미가나 지정 */
   .word-display rt {
     font-size: 18px; 
     color: var(--accent-mint);
@@ -111,8 +110,9 @@
   .word-meaning {
     min-height: 36px; display: flex; justify-content: center; align-items: center;
     font-size: 24px; font-weight: 700; color: var(--accent-mint);
-    margin-bottom: 24px; opacity: 0; transition: opacity 0.2s ease;
-    text-align: center; word-break: keep-all; line-height: 1.3;
+    margin-bottom: 24px; text-align: center; word-break: keep-all; line-height: 1.3;
+    /* 잔상 방지: 기본 상태에서 투명, 애니메이션 제거 (즉시 꺼짐) */
+    opacity: 0; 
   }
 
   .sentence-box {
@@ -129,7 +129,6 @@
     width: 100%; margin-bottom: 16px;
   }
   
-  /* 예문 안의 요미가나 색상 동일하게 수정 */
   .sentence-ja rt {
     font-size: 12px;
     color: var(--accent-mint);
@@ -138,16 +137,17 @@
   
   .sentence-ko {
     font-size: 16px; color: var(--text-sub); line-height: 1.5;
-    opacity: 0; transition: opacity 0.2s ease; 
-    word-break: keep-all; overflow-wrap: break-word;
-    width: 100%;
+    word-break: keep-all; overflow-wrap: break-word; width: 100%;
+    /* 잔상 방지: 기본 상태에서 투명, 애니메이션 제거 (즉시 꺼짐) */
+    opacity: 0; 
   }
 
-  /* 루비(요미가나) 기본 숨김 제어 */
-  rt { opacity: 0; transition: opacity 0.2s ease; }
+  /* 루비(요미가나) 잔상 방지 기본 설정 */
+  rt { opacity: 0; } 
   
-  .show-ruby rt { opacity: 1; }
-  .show-meaning .word-meaning, .show-meaning .sentence-ko { opacity: 1; }
+  /* 켤 때만 애니메이션을 부여하여 스르륵 켜지게 만듦 (끌 때는 즉시 증발) */
+  .show-ruby rt { opacity: 1; transition: opacity 0.15s ease-in; }
+  .show-meaning .word-meaning, .show-meaning .sentence-ko { opacity: 1; transition: opacity 0.15s ease-in; }
 
   /* 하단 고정 컨트롤 영역 */
   .bottom-controls {
@@ -255,7 +255,7 @@
   </div>
 </div>
 
-<script src="data.js?v=3"></script>
+<script src="data.js?v=4"></script>
 <script>
   const WORDS_PER_DAY = 30; 
   
@@ -347,7 +347,7 @@
   }
 
   function loadNextCard() {
-    // DOM 업데이트 전 한 번 더 확실하게 끄기
+    // 가장 중요: DOM을 교체하기 전에 반드시 스위치부터 끄고 잔상을 없앰
     isRubyOn = false;
     isMeaningOn = false;
     updateToggles();
@@ -404,7 +404,7 @@
   }
 
   function mark(isKnown) {
-    // 버튼을 누르는 순간 즉시 뜻과 요미가나를 꺼서 다음 단어로 넘어갈 때의 잔상 완벽 차단
+    // 버튼을 누르는 순간 스위치를 먼저 꺼서 잔상을 원천 차단합니다.
     isRubyOn = false;
     isMeaningOn = false;
     updateToggles();
