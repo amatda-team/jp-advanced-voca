@@ -60,9 +60,10 @@
   .day-icon { color: var(--text-sub); font-weight: bold; }
 
   /* --- 학습 뷰 --- */
+  /* 크롬 모바일 하단 스크롤 방지를 위해 하단 padding 축소 */
   #study-view {
     display: none; flex-direction: column; align-items: center;
-    padding: calc(24px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom));
+    padding: calc(20px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
     min-height: 100dvh; box-sizing: border-box;
     animation: fadeIn 0.3s ease;
   }
@@ -83,28 +84,27 @@
     top: 50%; transform: translateY(-50%); 
   }
 
-  /* 메인 학습 콘텐츠 영역 (남는 공간에서 세로 중앙 정렬) */
+  /* 메인 학습 콘텐츠 영역 (위아래 여백 축소) */
   .learning-container {
     width: 100%; max-width: 400px; display: flex; flex-direction: column; 
-    flex: 1; justify-content: center; /* 핵심: 내용물을 세로 중앙에 배치 */
-    padding: 20px 0;
+    flex: 1; justify-content: center; 
+    padding: 10px 0; 
   }
   
-  .word-tag { font-size: 14px; font-weight: 700; color: var(--text-sub); margin-bottom: 20px; text-align: center; }
-  
-  /* 글자 크기 대폭 상향 */
   .word-display {
     font-size: 64px; font-weight: 500; color: var(--text-main); 
     margin-bottom: 12px; text-align: center; display: flex; justify-content: center; align-items: center;
   }
+  /* 뜻과 예문 박스 사이 간격 축소 (40px -> 24px) */
   .word-meaning {
     font-size: 26px; font-weight: 700; color: var(--accent-mint);
-    text-align: center; margin-bottom: 40px; min-height: 36px;
+    text-align: center; margin-bottom: 24px; min-height: 36px;
     opacity: 0; transition: opacity 0.2s ease;
   }
 
+  /* 예문 박스 내부 패딩 축소 */
   .sentence-box {
-    background: var(--card-bg); border-radius: 20px; padding: 28px 20px;
+    background: var(--card-bg); border-radius: 20px; padding: 20px;
     text-align: center; border: 1px solid rgba(255,255,255,0.05);
   }
   .sentence-ja {
@@ -122,19 +122,17 @@
     color: var(--accent-mint); font-size: 12px; font-weight: 700; 
   }
   
-  /* 토글 상태 클래스 */
   .show-ruby rt { opacity: 1; }
   .show-meaning .word-meaning, .show-meaning .sentence-ko { opacity: 1; }
 
-  /* 하단 고정 컨트롤 영역 (버튼들이 바닥에 붙음) */
+  /* 하단 고정 컨트롤 영역 */
   .bottom-controls {
     width: 100%; max-width: 400px; 
-    margin-top: auto; /* 핵심: 상단 콘텐츠와 분리하여 바닥으로 밀어냄 */
-    display: flex; flex-direction: column; gap: 20px;
+    margin-top: auto; 
+    display: flex; flex-direction: column; gap: 16px;
     flex-shrink: 0;
   }
 
-  /* 토글 버튼 (왼쪽: 뜻, 오른쪽: 요미가나) */
   .toggle-area { display: flex; gap: 12px; width: 100%; }
   .toggle-btn {
     flex: 1; padding: 16px 0; background: rgba(255,255,255,0.05); border-radius: 14px;
@@ -145,7 +143,6 @@
     background: var(--accent-mint-bg); border: 2px solid var(--accent-mint); color: var(--accent-mint);
   }
 
-  /* 하단 평가 버튼 */
   .action-area { display: flex; gap: 16px; width: 100%; }
   .action-btn { 
     flex: 1; padding: 24px 0; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; 
@@ -207,10 +204,8 @@
     </div>
   </div>
 
-  <!-- 메인 학습 콘텐츠 (가운데 정렬됨) -->
+  <!-- 메인 학습 콘텐츠 -->
   <div class="learning-container" id="learningContainer">
-    <div class="word-tag" id="uiTag">#タグ</div>
-    
     <div class="word-display" id="uiWord">単語</div>
     <div class="word-meaning" id="uiMeaning">뜻</div>
     
@@ -318,7 +313,6 @@
     currentSessionTotal = chunk.length; 
     let clearedList = userStats[mode] && userStats[mode].cleared ? userStats[mode].cleared : [];
     
-    // 남은 단어들을 섞어서 준비
     sessionWords = chunk.filter(w => !clearedList.includes(w.id)).sort(() => 0.5 - Math.random());
 
     document.getElementById('dashboard-view').style.display = 'none';
@@ -347,7 +341,6 @@
     }
     
     currentCard = sessionWords[0];
-    document.getElementById('uiTag').innerText = `#${currentCard.tag}`;
     
     const wordHtml = currentCard.word.includes('<ruby>') ? currentCard.word : `<ruby>${currentCard.word}<rt>${currentCard.reading}</rt></ruby>`;
     document.getElementById('uiWord').innerHTML = wordHtml;
@@ -389,7 +382,6 @@
         if (!userStats[currentMode].cleared) userStats[currentMode].cleared = [];
         userStats[currentMode].cleared.push(card.id); 
       } else {
-        // 모르면 배열의 맨 끝에 다시 넣어서 이번 세션 내에서 다시 나오게 함
         sessionWords.push(card);
       }
       saveStats();
