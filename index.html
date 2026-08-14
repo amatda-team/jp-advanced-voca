@@ -101,18 +101,16 @@
     margin-bottom: 24px; opacity: 0; transition: opacity 0.2s ease;
   }
 
-  /* 예문 박스 (강제 고정 해제 -> 자연스러운 반응형 패딩으로 복구) */
   .sentence-box {
     background: var(--card-bg); border-radius: 20px; 
-    padding: 28px 20px; /* 상하좌우 여유로운 패딩 부여 */
+    padding: 28px 20px;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     text-align: center; border: 1px solid rgba(255,255,255,0.03);
     width: 100%; box-sizing: border-box;
   }
-  /* 일본어 문장 줄바꿈 설정 정상화 */
   .sentence-ja {
     font-size: 22px; line-height: 2.2; font-weight: 500; color: var(--text-main);
-    word-break: normal; /* 자연스러운 일본어 줄바꿈 허용 */
+    word-break: normal; 
     overflow-wrap: break-word; 
     width: 100%; margin-bottom: 16px;
   }
@@ -123,7 +121,6 @@
     width: 100%;
   }
 
-  /* 루비(요미가나) 숨김/보임 제어 */
   rt { 
     opacity: 0; transition: opacity 0.2s ease; 
     color: var(--accent-mint); font-size: 12px; font-weight: 700; 
@@ -140,7 +137,6 @@
     flex-shrink: 0;
   }
 
-  /* 토글 버튼 */
   .toggle-area { display: flex; gap: 12px; width: 100%; }
   .toggle-btn {
     flex: 1; padding: 18px 0; background: rgba(255,255,255,0.04); border-radius: 14px;
@@ -213,7 +209,6 @@
     <div class="word-display" id="uiWord">単語</div>
     <div class="word-meaning" id="uiMeaning">뜻</div>
     
-    <!-- 예문 박스 -->
     <div class="sentence-box">
       <div class="sentence-ja" id="uiExJa">例文</div>
       <div class="sentence-ko" id="uiExKo">예문 해석</div>
@@ -265,7 +260,13 @@
     };
   }
 
-  function init() { renderDashboard(); }
+  function init() { 
+    if (typeof db === 'undefined') {
+      alert('data.js 파일이 로드되지 않았거나 db 변수가 정의되지 않았습니다.');
+      return;
+    }
+    renderDashboard(); 
+  }
 
   function renderDashboard() {
     const totalCount = db.length;
@@ -283,7 +284,7 @@
       
       const startIndex = (i - 1) * WORDS_PER_DAY;
       const chunkLength = db.slice(startIndex, startIndex + WORDS_PER_DAY).length;
-      const percent = Math.round((clearedCount / chunkLength) * 100);
+      const percent = Math.round((clearedCount / chunkLength) * 100) || 0;
 
       let statusBadge = '';
       if (completions > 0) statusBadge = `<span class="day-status status-done">🔥 ${completions}回読</span>`;
@@ -345,12 +346,14 @@
     
     currentCard = sessionWords[0];
     
-    const wordHtml = currentCard.word.includes('<ruby>') ? currentCard.word : `<ruby>${currentCard.word}<rt>${currentCard.reading}</rt></ruby>`;
+    const wordHtml = currentCard.word && currentCard.word.includes('<ruby>') 
+      ? currentCard.word 
+      : `<ruby>${currentCard.word}<rt>${currentCard.reading || ''}</rt></ruby>`;
+      
     document.getElementById('uiWord').innerHTML = wordHtml;
-    
-    document.getElementById('uiMeaning').innerText = currentCard.meaning;
-    document.getElementById('uiExJa').innerHTML = currentCard.exJa !== "-" ? currentCard.exJa : "例文がありません。";
-    document.getElementById('uiExKo').innerText = currentCard.exKo !== "-" ? currentCard.exKo : "-";
+    document.getElementById('uiMeaning').innerText = currentCard.meaning || "";
+    document.getElementById('uiExJa').innerHTML = (currentCard.exJa && currentCard.exJa !== "-") ? currentCard.exJa : "例文がありません。";
+    document.getElementById('uiExKo').innerText = (currentCard.exKo && currentCard.exKo !== "-") ? currentCard.exKo : "-";
     
     isRubyOn = false;
     isMeaningOn = false;
@@ -394,7 +397,8 @@
 
   function saveStats() { localStorage.setItem('jpAdvancedStats', JSON.stringify(userStats)); }
 
-  init();
+  // DOM 로드 완료 후 실행되도록 변경
+  window.addEventListener('DOMContentLoaded', init);
 </script>
 
 </body>
