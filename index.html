@@ -17,9 +17,7 @@
     --text-main: #E8EAED;
     --text-sub: #9AA0A6;
     --accent-mint: #57C7A3;
-    --accent-mint-bg: rgba(87, 199, 163, 0.15);
     --accent-coral: #F28B82;
-    --accent-coral-bg: rgba(242, 139, 130, 0.15);
   }
 
   body { 
@@ -51,7 +49,7 @@
   
   .day-status { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; }
   .status-new { background: rgba(154, 160, 166, 0.15); color: var(--text-sub); }
-  .status-ing { background: var(--accent-mint-bg); color: var(--accent-mint); } 
+  .status-ing { background: rgba(87, 199, 163, 0.15); color: var(--accent-mint); } 
   .status-done { background: rgba(253, 203, 110, 0.15); color: #FDCB6E; border: 1px solid rgba(253, 203, 110, 0.3); }
 
   .day-progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
@@ -60,7 +58,6 @@
   .day-icon { color: var(--text-sub); font-weight: bold; }
 
   /* --- 학습 뷰 --- */
-  /* 크롬 모바일 하단 스크롤 방지를 위해 하단 padding 축소 */
   #study-view {
     display: none; flex-direction: column; align-items: center;
     padding: calc(20px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
@@ -84,32 +81,36 @@
     top: 50%; transform: translateY(-50%); 
   }
 
-  /* 메인 학습 콘텐츠 영역 (위아래 여백 축소) */
+  /* 메인 학습 콘텐츠 영역 (레이아웃 흔들림 방지 고정 뼈대) */
   .learning-container {
     width: 100%; max-width: 400px; display: flex; flex-direction: column; 
     flex: 1; justify-content: center; 
     padding: 10px 0; 
   }
   
+  /* 한자 영역 고정 높이 */
   .word-display {
+    height: 80px; display: flex; justify-content: center; align-items: center;
     font-size: 64px; font-weight: 500; color: var(--text-main); 
-    margin-bottom: 12px; text-align: center; display: flex; justify-content: center; align-items: center;
+    margin-bottom: 8px; text-align: center;
   }
-  /* 뜻과 예문 박스 사이 간격 축소 (40px -> 24px) */
+  /* 뜻 영역 고정 높이 */
   .word-meaning {
+    height: 36px; display: flex; justify-content: center; align-items: center;
     font-size: 26px; font-weight: 700; color: var(--accent-mint);
-    text-align: center; margin-bottom: 24px; min-height: 36px;
-    opacity: 0; transition: opacity 0.2s ease;
+    margin-bottom: 24px; opacity: 0; transition: opacity 0.2s ease;
   }
 
-  /* 예문 박스 내부 패딩 축소 */
+  /* 예문 박스 고정 높이 (내부 텍스트는 세로 중앙 정렬) */
   .sentence-box {
-    background: var(--card-bg); border-radius: 20px; padding: 20px;
-    text-align: center; border: 1px solid rgba(255,255,255,0.05);
+    background: var(--card-bg); border-radius: 20px; padding: 0 20px;
+    height: 160px; /* 고정 높이로 흔들림 차단 */
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; border: 1px solid rgba(255,255,255,0.03);
   }
   .sentence-ja {
     font-size: 22px; line-height: 2.2; font-weight: 500; color: var(--text-main);
-    word-break: keep-all; margin-bottom: 16px;
+    word-break: keep-all; margin-bottom: 12px;
   }
   .sentence-ko {
     font-size: 18px; color: var(--text-sub); line-height: 1.5;
@@ -133,14 +134,16 @@
     flex-shrink: 0;
   }
 
+  /* 토글 버튼 (잔잔하고 부드러운 느낌으로 변경) */
   .toggle-area { display: flex; gap: 12px; width: 100%; }
   .toggle-btn {
-    flex: 1; padding: 16px 0; background: rgba(255,255,255,0.05); border-radius: 14px;
-    color: var(--text-sub); font-size: 16px; font-weight: 700; border: 2px solid transparent;
-    cursor: pointer; transition: all 0.1s;
+    flex: 1; padding: 18px 0; background: rgba(255,255,255,0.04); border-radius: 14px;
+    color: var(--text-sub); font-size: 16px; font-weight: 600; border: none;
+    cursor: pointer; transition: all 0.2s ease;
   }
+  /* 활성화 시 부드러운 색상 변화 (테두리 없음) */
   .toggle-btn.active {
-    background: var(--accent-mint-bg); border: 2px solid var(--accent-mint); color: var(--accent-mint);
+    background: rgba(255,255,255,0.08); color: #E8EAED;
   }
 
   .action-area { display: flex; gap: 16px; width: 100%; }
@@ -179,17 +182,14 @@
 </head>
 <body>
 
-<!-- 홈 화면 -->
 <div id="dashboard-view">
   <div class="dash-header">
     <h1 class="dash-title">深掘り単語帳</h1>
     <div class="dash-progress-text" id="uiGlobalProgress">総単語数: 0</div>
   </div>
-
   <div class="day-list" id="uiDayList"></div>
 </div>
 
-<!-- 학습 화면 -->
 <div id="study-view">
   <div class="study-header">
     <button class="back-btn" onclick="goHome()">
@@ -204,7 +204,6 @@
     </div>
   </div>
 
-  <!-- 메인 학습 콘텐츠 -->
   <div class="learning-container" id="learningContainer">
     <div class="word-display" id="uiWord">単語</div>
     <div class="word-meaning" id="uiMeaning">뜻</div>
@@ -215,11 +214,10 @@
     </div>
   </div>
 
-  <!-- 하단 고정 버튼 영역 -->
   <div class="bottom-controls">
     <div class="toggle-area">
-      <button class="toggle-btn" id="btn-meaning" onclick="toggleMeaning()">意味</button>
-      <button class="toggle-btn" id="btn-ruby" onclick="toggleRuby()">ふりがな</button>
+      <button class="toggle-btn" id="btn-meaning" onclick="toggleMeaning()">💡 意味</button>
+      <button class="toggle-btn" id="btn-ruby" onclick="toggleRuby()">🗣️ ふりがな</button>
     </div>
     
     <div class="action-area">
@@ -229,7 +227,6 @@
   </div>
 </div>
 
-<!-- 알럿 -->
 <div class="custom-alert-overlay" id="customAlertOverlay">
   <div class="custom-alert-box">
     <div class="custom-alert-icon" id="customAlertIcon">🎉</div>
