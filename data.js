@@ -1652,7 +1652,7 @@ const db = [
     reading: "からなる",
     meaning: "~로 이루어지다",
     tag: "日常",
-    exJa: この<ruby>委員会<rt>いいんかい</rt></ruby>は、<ruby>五人<rt>ごにん</rt></ruby>の<ruby>専門家<rt>せんもんか</rt></ruby>からなる。",
+    exJa: "この<ruby>委員会<rt>いいんかい</rt></ruby>は、<ruby>五人<rt>ごにん</rt></ruby>の<ruby>専門家<rt>せんもんか</rt></ruby>からなる。",
     exKo: "이 위원회는 다섯 명의 전문가로 이루어져 있다."
   },
   {
@@ -1706,7 +1706,7 @@ const db = [
     reading: "おこなえる",
     meaning: "행할 수 있다",
     tag: "日常",
-    exJa: スマホさえあれば、どこでも<ruby>決済<rt>けっさい</rt></ruby>が<ruby>行<rt>おこな</rt></ruby>える。",
+    exJa: "スマホさえあれば、どこでも<ruby>決済<rt>けっさい</rt></ruby>が<ruby>行<rt>おこな</rt></ruby>える。",
     exKo: "스마트폰만 있으면 어디서든 결제를 행할 수 있다."
   },
   {
@@ -1787,7 +1787,7 @@ const db = [
     reading: "たいしょう",
     meaning: "대상",
     tag: "日常",
-    exJa: この<ruby>割引<rt>わりびき</rt></ruby>は、<ruby>学生<rt>がくせい</rt></ruby>のみを<ruby>対象<rt>たいしょう</rt></ruby>としています。",
+    exJa: "この<ruby>割引<rt>わりびき</rt></ruby>は、<ruby>学生<rt>がくせい</rt></ruby>のみを<ruby>対象<rt>たいしょう</rt></ruby>としています。",
     exKo: "이 할인은 학생만을 대상으로 하고 있습니다."
   },
   {
