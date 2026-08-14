@@ -90,36 +90,36 @@
     padding: 10px 0; 
   }
   
-  /* 한자 영역 고정 높이 */
   .word-display {
     height: 80px; display: flex; justify-content: center; align-items: center;
     font-size: 64px; font-weight: 500; color: var(--text-main); 
     margin-bottom: 8px; text-align: center;
   }
-  /* 뜻 영역 고정 높이 */
   .word-meaning {
     height: 36px; display: flex; justify-content: center; align-items: center;
     font-size: 26px; font-weight: 700; color: var(--accent-mint);
     margin-bottom: 24px; opacity: 0; transition: opacity 0.2s ease;
   }
 
-  /* 예문 박스 고정 높이 완벽 제어 */
+  /* 예문 박스 (강제 고정 해제 -> 자연스러운 반응형 패딩으로 복구) */
   .sentence-box {
-    background: var(--card-bg); border-radius: 20px; padding: 0 20px;
-    height: 160px; /* 고정 높이로 흔들림 차단 */
+    background: var(--card-bg); border-radius: 20px; 
+    padding: 28px 20px; /* 상하좌우 여유로운 패딩 부여 */
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     text-align: center; border: 1px solid rgba(255,255,255,0.03);
-    width: 100%; box-sizing: border-box; /* 박스 바깥으로 삐져나가지 않게 차단 */
+    width: 100%; box-sizing: border-box;
   }
+  /* 일본어 문장 줄바꿈 설정 정상화 */
   .sentence-ja {
     font-size: 22px; line-height: 2.2; font-weight: 500; color: var(--text-main);
-    word-break: break-word; /* 핵심 해결: 띄어쓰기 없는 일본어 자동 줄바꿈 */
-    width: 100%; margin-bottom: 12px;
+    word-break: normal; /* 자연스러운 일본어 줄바꿈 허용 */
+    overflow-wrap: break-word; 
+    width: 100%; margin-bottom: 16px;
   }
   .sentence-ko {
     font-size: 18px; color: var(--text-sub); line-height: 1.5;
     opacity: 0; transition: opacity 0.2s ease; 
-    word-break: keep-all; overflow-wrap: break-word; /* 한국어는 단어 단위 유지하되 길면 줄바꿈 */
+    word-break: keep-all; overflow-wrap: break-word;
     width: 100%;
   }
 
@@ -213,6 +213,7 @@
     <div class="word-display" id="uiWord">単語</div>
     <div class="word-meaning" id="uiMeaning">뜻</div>
     
+    <!-- 예문 박스 -->
     <div class="sentence-box">
       <div class="sentence-ja" id="uiExJa">例文</div>
       <div class="sentence-ko" id="uiExKo">예문 해석</div>
